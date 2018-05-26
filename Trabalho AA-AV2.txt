@@ -1,0 +1,247 @@
+Exercício 1:
+
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Exercicio1
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            var cronometro = System.Diagnostics.Stopwatch.StartNew();
+            int[] precos = new int[20];
+            int num, j = 0;
+            string caminho = @"C:\Users\Daniel\Desktop\Teste_Corte_de_Hastes.txt";
+            StreamReader x = File.OpenText(caminho);
+            
+            while(x.EndOfStream != true)
+            {
+                precos[j] = Convert.ToInt32(x.ReadLine());
+                j++;
+            }
+
+            Console.WriteLine("Insira o tamanho da haste: ");
+            num = Convert.ToInt32(Console.ReadLine());
+
+            int lucro = Corta_Hastes(precos, num);
+
+            cronometro.Stop();
+
+            Console.WriteLine("O lucro obtido foi: {0}. Tempo de execução: {1}milissegundos.", lucro, cronometro.ElapsedMilliseconds);
+            Console.ReadKey();
+        }
+
+        private static int Corta_Hastes(int[] precos, int num)
+        {
+            if (num == 0)
+                return 0;
+            int q = -1;
+            for(int i = 1; i <= num; i++)
+            {
+                q = Math.Max(q, precos[i - 1] + Corta_Hastes(precos, num - i));
+            }
+            return q;
+        }
+    }
+}
+
+Exercício 2:
+
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Exercicio2
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            var cronometro = System.Diagnostics.Stopwatch.StartNew();
+            int[] precos = new int[20];
+            int num, j = 0;
+            string caminho = @"C:\Users\Daniel\Desktop\Teste_Corte_de_Hastes.txt";
+            StreamReader x = File.OpenText(caminho);
+
+            while (x.EndOfStream != true)
+            {
+                precos[j] = Convert.ToInt32(x.ReadLine());
+                j++;
+            }
+
+            Console.WriteLine("Insira o tamanho da haste: ");
+            num = Convert.ToInt32(Console.ReadLine());
+
+            int lucro = Corta_Hastes_Memoizado(precos, num);
+
+            cronometro.Stop();
+
+            Console.WriteLine("O lucro obtido foi: {0}. Tempo de execução: {1}milissegundos.", lucro, cronometro.ElapsedMilliseconds);
+            Console.ReadKey();
+        }
+
+        private static int Corta_Hastes_Memoizado(int[] precos, int num)
+        {
+            int[] r = new int[num + 1];
+            for(int i = 0; i <= num; i++)
+            {
+                r[i] = -1;
+            }
+            return Corta_Hastes_Memoizado_Rec(precos, num, r);
+        }
+
+        private static int Corta_Hastes_Memoizado_Rec(int[] precos, int num, int[] r)
+        {
+            if(r[num] < 0)
+            {
+                int q = 0;
+                for (int i = 1; i <= num; i++)
+                {
+                    q = Math.Max(q, precos[i - 1] + Corta_Hastes_Memoizado_Rec(precos, num - i, r));
+                }
+                r[num] = q;
+                return q;
+            }
+            return r[num];
+        }
+    }
+}
+
+Exercício 3:
+
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Exercicio3
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            var cronometro = System.Diagnostics.Stopwatch.StartNew();
+            int[] precos = new int[20];
+            int num, j = 0;
+            string caminho = @"C:\Users\Daniel\Desktop\Teste_Corte_de_Hastes.txt";
+            StreamReader x = File.OpenText(caminho);
+
+            while (x.EndOfStream != true)
+            {
+                precos[j] = Convert.ToInt32(x.ReadLine());
+                j++;
+            }
+
+            Console.WriteLine("Insira o tamanho da haste: ");
+            num = Convert.ToInt32(Console.ReadLine());
+
+            int lucro = Corta_Hastes_Bot_Up(precos, num);
+
+            cronometro.Stop();
+
+            Console.WriteLine("O lucro obtido foi: {0}. Tempo de execução: {1}milissegundos.", lucro, cronometro.ElapsedMilliseconds);
+            Console.ReadKey();
+        }
+
+        private static int Corta_Hastes_Bot_Up(int[] precos, int num)
+        {
+            int[] r = new int[num + 1];
+            r[0] = 0;
+            int q = 0;
+            
+            for(int j = 1; j <= num; j++)
+            {
+                for(int i = 1; i<= j; i++)
+                {
+                    q = Math.Max(q, precos[i - 1] + r[j - i]);
+                }
+                r[j] = q;
+            }
+            return q;
+        }
+    }
+}
+
+
+Exercício 4:
+
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Exercicio4
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            var cronometro = System.Diagnostics.Stopwatch.StartNew();
+            int[] inicio = new int[10];
+            int[] fim = new int[10];
+            string atvInicio;
+            string atvFim;
+            char delimiter = ' ';
+            string[] substrings;
+            int i = 0, j = 0;
+            string caminho = @"C:\Users\B859451\Desktop\arq02.txt";
+            StreamReader x = File.OpenText(caminho);
+
+            atvInicio = x.ReadLine();
+            atvFim = x.ReadLine();
+
+            substrings = atvInicio.Split(delimiter);
+
+            foreach (var substring in substrings)
+            {
+                inicio[i] = Convert.ToInt32(substring);
+                i++;
+            }
+
+            substrings = atvFim.Split(delimiter);
+
+            foreach(var substring in substrings)
+            {
+                fim[j] = Convert.ToInt32(substring);
+                j++;
+            }
+            
+            Selecao_Atividades(inicio, fim);
+            cronometro.Stop();
+
+            Console.WriteLine("O tempo de Execução foi de: {0} milisegundos", cronometro.ElapsedMilliseconds);
+            Console.ReadKey();
+        }
+
+        private static void Selecao_Atividades(int[] inicio, int[] fim)
+        {
+            int selecionado = 0;
+
+            Console.Write("Atividades Selecionadas: ");
+            Console.Write("{0} ", selecionado);
+
+            for(int i = 1; i < inicio.Length; i++)
+            {
+                if(inicio[i] >= fim[selecionado])
+                {
+                    Console.Write("{0} ", i);
+                    selecionado = i;
+                }
+            }
+        }
+    }
+}
+
+
